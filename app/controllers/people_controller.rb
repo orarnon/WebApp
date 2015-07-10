@@ -1,10 +1,12 @@
 class PeopleController < ApplicationController
   before_action :set_person, only: [:show, :edit, :update, :destroy]
+  helper_method :sort_column, :sort_direction
 
   # GET /people
   # GET /people.json
   def index
-    @people = Person.all
+    #@people = Person.all
+    @people = Person.search(params[:search]).order(sort_column + " " + sort_direction).paginate(:per_page => 5, :page => params[:page])
   end
 
   # GET /people/1
@@ -62,13 +64,22 @@ class PeopleController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_person
-      @person = Person.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_person
+    @person = Person.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def person_params
-      params.require(:person).permit(:FirstName, :LastName)
-    end
+  def sort_column
+    Person.column_names.include?(params[:sort]) ? params[:sort] : "FirstName"
+    #params[:sort] || "FirstName"
+  end
+
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def person_params
+    params.require(:person).permit(:FirstName, :LastName)
+  end
 end
