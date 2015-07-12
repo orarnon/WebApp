@@ -1,0 +1,2 @@
+class AutoPeopleexitController < ApplicationController
+end

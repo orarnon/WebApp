@@ -4,10 +4,15 @@ class PeopleController < ApplicationController
 
   # GET /people
   # GET /people.json
+
+  #caches_page :index, :search
+  #cache_sweeper :people_sweeper
+  #caches_action :index
+
   def index
     #@people = Person.all
     @people = Person.search(params[:search]).order(sort_column + " " + sort_direction).paginate(:per_page => 5, :page => params[:page])
-  end
+end
 
   # GET /people/1
   # GET /people/1.json
@@ -30,6 +35,7 @@ class PeopleController < ApplicationController
 
     respond_to do |format|
       if @person.save
+        #expire_action :action => [:search]
         format.html { redirect_to @person, notice: 'Person was successfully created.' }
         format.json { render :show, status: :created, location: @person }
       else
@@ -44,6 +50,7 @@ class PeopleController < ApplicationController
   def update
     respond_to do |format|
       if @person.update(person_params)
+        #expire_action :action => [:search]
         format.html { redirect_to @person, notice: 'Person was successfully updated.' }
         format.json { render :show, status: :ok, location: @person }
       else
@@ -58,6 +65,7 @@ class PeopleController < ApplicationController
   def destroy
     @person.destroy
     respond_to do |format|
+      expire_action :action => [:search]
       format.html { redirect_to people_url, notice: 'Person was successfully destroyed.' }
       format.json { head :no_content }
     end

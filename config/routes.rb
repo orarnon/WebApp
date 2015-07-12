@@ -1,8 +1,17 @@
 Rails.application.routes.draw do
 
-  get 'people/index'
-  root 'people#index'
+  get 'people/page/:page', to: 'people#index'
+  get 'people/:direction/:sort', to: 'people#index'
+  get 'people/:direction/:sort/:search', to: 'people#index'
+  #get 'heartbeat', to: 'heartbeat#beat'
+  #get "heartbeat" => "heartbeat#beat", as:"heartbeat"
+
   resources :people
+  #resources :hearbeat
+  root 'people#index'
+
+
+  #resources :autopeople
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
